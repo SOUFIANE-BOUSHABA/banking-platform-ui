@@ -7,6 +7,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CreateComponent} from "./user/create/create.component";
 import {ManageAccountsComponent} from "./account/manage-accounts/manage-accounts.component";
 import {ManageCreditRequestsComponent} from "./credit-request/manage-credit-requests/manage-credit-requests.component";
+import {ManageInvoicesComponent} from "./invoices/manage-invoices/manage-invoices.component";
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import {ManageCreditRequestsComponent} from "./credit-request/manage-credit-requ
     CreateComponent,
     ManageAccountsComponent ,
     ManageCreditRequestsComponent,
+    ManageInvoicesComponent,
   ],
   imports: [
     CommonModule,

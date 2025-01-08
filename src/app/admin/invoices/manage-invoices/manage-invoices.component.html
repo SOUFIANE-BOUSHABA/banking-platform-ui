@@ -1,0 +1,65 @@
+<div class="container mx-auto p-6 bg-white shadow-md rounded-lg">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold text-gray-800">Manage Invoices</h1>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full border border-gray-200 divide-y divide-gray-200">
+      <thead class="bg-gray-50 text-left">
+      <tr>
+        <th class="px-4 py-2   text-xs font-medium text-gray-600">ID</th>
+        <th class="px-4 py-2  text-xs font-medium text-gray-600">Description</th>
+        <th class="px-4 py-2  text-xs font-medium text-gray-600">Amount</th>
+        <th class="px-4 py-2 text-xs font-medium text-gray-600">Status</th>
+        <th class="px-4 py-2  text-xs font-medium text-gray-600">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let invoice of displayedInvoices">
+        <td class="px-4 text-sm text-gray-800 py-2">{{ invoice.id }}</td>
+        <td class="px-4  text-sm text-gray-800 py-2">{{ invoice.description }}</td>
+        <td class="px-4  text-sm text-gray-800 py-2">${{ invoice.amount }}</td>
+        <td class="px-4 text-sm text-gray-800 py-2">
+            <span
+              class="px-3  py-1 text-xs font-semibold rounded-full"
+              [ngClass]="statusClass(invoice.status)"
+            >
+              {{ invoice.status }}
+            </span>
+        </td>
+        <td class="px-4 text-sm text-gray-800 py-2">
+          <button
+            class="text-green-600 hover:text-green-900"
+            (click)="updateStatus(invoice.id!, 'PAID')"
+            [disabled]="invoice.status === 'PAID'"
+          >
+            Mark as Paid
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex justify-between items-center mt-4">
+    <p class="text-sm text-gray-700">
+      Showing {{ startIndex }} to {{ endIndex }} of {{ invoices.length }} results
+    </p>
+    <div class="flex gap-2">
+      <button
+        (click)="changePage(-1)"
+        [disabled]="currentPage === 1"
+        class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50"
+      >
+        Previous
+      </button>
+      <button
+        (click)="changePage(1)"
+        [disabled]="currentPage === totalPages"
+        class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</div>
