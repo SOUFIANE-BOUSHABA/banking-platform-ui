@@ -6,13 +6,15 @@ import {DisplayUsersComponent} from "./user/display-users/display-users.componen
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CreateComponent} from "./user/create/create.component";
 import {ManageAccountsComponent} from "./account/manage-accounts/manage-accounts.component";
+import {ManageCreditRequestsComponent} from "./credit-request/manage-credit-requests/manage-credit-requests.component";
 
 
 @NgModule({
   declarations: [
     DisplayUsersComponent,
     CreateComponent,
-    ManageAccountsComponent
+    ManageAccountsComponent ,
+    ManageCreditRequestsComponent,
   ],
   imports: [
     CommonModule,

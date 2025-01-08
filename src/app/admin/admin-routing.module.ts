@@ -4,15 +4,17 @@ import {DisplayUsersComponent} from "./user/display-users/display-users.componen
 import {AdminComponent} from "./admin.component";
 import {CreateComponent} from "./user/create/create.component";
 import {ManageAccountsComponent} from "./account/manage-accounts/manage-accounts.component";
+import {ManageCreditRequestsComponent} from "./credit-request/manage-credit-requests/manage-credit-requests.component";
 
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
     children: [
-      { path: 'users', component: DisplayUsersComponent },
+      {path: 'users', component: DisplayUsersComponent },
       {path : 'create/user' , component : CreateComponent},
-      {path : 'accounts' , component : ManageAccountsComponent}
+      {path : 'accounts' , component : ManageAccountsComponent},
+      {path : 'credit-requests' , component : ManageCreditRequestsComponent} ,
 
     ],
   },
