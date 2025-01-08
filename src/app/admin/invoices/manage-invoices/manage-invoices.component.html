@@ -41,22 +41,24 @@
     </table>
   </div>
 
-  <div class="flex justify-between items-center mt-4">
+  <div class="mt-4 flex justify-between items-center">
     <p class="text-sm text-gray-700">
-      Showing {{ startIndex }} to {{ endIndex }} of {{ invoices.length }} results
+      Showing <span class="font-medium">{{ startIndex }}</span> to <span class="font-medium">{{ endIndex }}</span> of <span class="font-medium">{{ displayedInvoices.length }}</span> results
     </p>
     <div class="flex gap-2">
       <button
         (click)="changePage(-1)"
+        class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
         [disabled]="currentPage === 1"
-        class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50"
+        [ngClass]="{'opacity-50 cursor-not-allowed': currentPage === 1}"
       >
         Previous
       </button>
       <button
         (click)="changePage(1)"
+        class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
         [disabled]="currentPage === totalPages"
-        class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50"
+        [ngClass]="{'opacity-50 cursor-not-allowed': currentPage === totalPages}"
       >
         Next
       </button>
