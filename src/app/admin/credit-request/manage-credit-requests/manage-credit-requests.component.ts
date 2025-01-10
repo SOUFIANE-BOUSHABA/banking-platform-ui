@@ -4,7 +4,7 @@ import { CreditRequest } from '../../../core/models/CreditRequest.model';
 
 @Component({
   selector: 'app-manage-credit-requests',
-  templateUrl: './manage-credit-requests.component.html'
+  templateUrl: './manage-credit-requests.component.html',
 })
 export class ManageCreditRequestsComponent implements OnInit {
   creditRequests: CreditRequest[] = [];
@@ -24,7 +24,20 @@ export class ManageCreditRequestsComponent implements OnInit {
     });
   }
 
-  updateStatus(requestId: number, newStatus: string): void {
+
+  approveTransaction(requestId: number): void {
+    this.updateStatus(requestId, 'APPROVED', () => {
+      this.fetchCreditRequests();
+    });
+  }
+
+  rejectTransaction(requestId: number): void {
+    this.updateStatus(requestId, 'REJECTED', () => {
+      this.fetchCreditRequests();
+    });
+  }
+
+  updateStatus(requestId: number, newStatus: string, callback?: () => void): void {
     const approve = newStatus === 'APPROVED';
     this.creditRequestService.approve(requestId, approve).subscribe({
       next: () => {
@@ -32,10 +45,14 @@ export class ManageCreditRequestsComponent implements OnInit {
         if (request) {
           request.status = newStatus;
         }
+        if (callback) {
+          callback();
+        }
       },
       error: (err) => console.error(`Error updating status for request ${requestId}:`, err),
     });
   }
+
 
   get displayedRequests(): CreditRequest[] {
     const startIndex = (this.currentPage - 1) * this.pageSize;
