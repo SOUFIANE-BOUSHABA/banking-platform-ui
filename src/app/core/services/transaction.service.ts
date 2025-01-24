@@ -11,19 +11,13 @@ export class TransactionService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>(`${this.baseUrl}/all`);
+  getAll(page: number, pageSize: number): Observable<{ content: Transaction[]; totalElements: number }> {
+    return this.http.get<{ content: Transaction[]; totalElements: number }>(
+      `${this.baseUrl}?page=${page}&size=${pageSize}`
+    );
   }
 
-  approve(transactionId: number): Observable<Transaction> {
-    return this.http.put<Transaction>(`${this.baseUrl}/approve/${transactionId}`, {});
-  }
-
-  reject(transactionId: number): Observable<Transaction> {
-    return this.http.put<Transaction>(`${this.baseUrl}/reject/${transactionId}`, {});
-  }
-
-  getUserTransactions(): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>(`${this.baseUrl}/user-transactions`);
+  updateStatus(transactionId: number, status: 'APPROVED' | 'REJECTED'): Observable<Transaction> {
+    return this.http.put<Transaction>(`${this.baseUrl}/${transactionId}/${status.toLowerCase()}`, {});
   }
 }

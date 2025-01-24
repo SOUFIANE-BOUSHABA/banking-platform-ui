@@ -1,5 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { TransactionService } from '../../../core/services/transaction.service';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import * as TransactionActions from '../state/transaction.actions';
+import {
+  selectAllTransactions,
+  selectCurrentPage,
+  selectPageSize,
+  selectTotalTransactions,
+  selectIsLoading,
+} from '../state/transaction.selectors';
 import { Transaction } from '../../../core/models/Transaction.model';
 
 @Component({
@@ -7,58 +16,53 @@ import { Transaction } from '../../../core/models/Transaction.model';
   templateUrl: './manage-transactions.component.html',
 })
 export class ManageTransactionsComponent implements OnInit {
-  transactions: Transaction[] = [];
-  currentPage = 1;
-  pageSize = 5;
+  transactions$: Observable<Transaction[]> = this.store.select(selectAllTransactions);
+  currentPage$: Observable<number> = this.store.select(selectCurrentPage);
+  pageSize$: Observable<number> = this.store.select(selectPageSize);
+  totalTransactions$: Observable<number> = this.store.select(selectTotalTransactions);
+  isLoading$: Observable<boolean> = this.store.select(selectIsLoading);
 
-  constructor(private transactionService: TransactionService) {}
+  displayedTransactions: Transaction[] = [];
+  currentPage: number = 1;
+  pageSize: number = 5;
+  totalPages: number = 0;
+  startIndex: number = 0;
+  endIndex: number = 0;
+  transactions: Transaction[] = [];
+
+  constructor(private store: Store) {}
 
   ngOnInit(): void {
-    this.loadTransactions();
+    this.loadPage(this.currentPage, this.pageSize);
+    this.transactions$.subscribe(transactions => {
+      this.transactions = transactions;
+      this.updateDisplayedTransactions();
+    });
+    this.totalTransactions$.subscribe(total => {
+      this.totalPages = Math.ceil(total / this.pageSize);
+    });
   }
 
-  loadTransactions(): void {
-    this.transactionService.getAll().subscribe({
-      next: (transactions) => (this.transactions = transactions),
-      error: (err) => console.error('Failed to fetch transactions', err),
-    });
+  loadPage(page: number, pageSize: number): void {
+    this.store.dispatch(TransactionActions.loadTransactions({ page, pageSize }));
   }
 
   approveTransaction(transactionId: number): void {
-    this.transactionService.approve(transactionId).subscribe({
-      next: () => this.loadTransactions(),
-      error: (err) => console.error('Failed to approve transaction', err),
-    });
+    this.store.dispatch(TransactionActions.approveTransaction({ transactionId }));
   }
 
   rejectTransaction(transactionId: number): void {
-    this.transactionService.reject(transactionId).subscribe({
-      next: () => this.loadTransactions(),
-      error: (err) => console.error('Failed to reject transaction', err),
-    });
+    this.store.dispatch(TransactionActions.rejectTransaction({ transactionId }));
   }
 
-  get displayedTransactions(): Transaction[] {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.transactions.slice(startIndex, startIndex + this.pageSize);
+  changePage(direction: number): void {
+    this.currentPage += direction;
+    this.updateDisplayedTransactions();
   }
 
-  changePage(delta: number): void {
-    const newPage = this.currentPage + delta;
-    if (newPage >= 1 && newPage <= this.totalPages) {
-      this.currentPage = newPage;
-    }
-  }
-
-  get totalPages(): number {
-    return Math.ceil(this.transactions.length / this.pageSize);
-  }
-
-  get startIndex(): number {
-    return (this.currentPage - 1) * this.pageSize + 1;
-  }
-
-  get endIndex(): number {
-    return Math.min(this.startIndex + this.pageSize - 1, this.transactions.length);
+  updateDisplayedTransactions(): void {
+    this.startIndex = (this.currentPage - 1) * this.pageSize;
+    this.endIndex = Math.min(this.startIndex + this.pageSize, this.transactions.length);
+    this.displayedTransactions = this.transactions.slice(this.startIndex, this.endIndex);
   }
 }

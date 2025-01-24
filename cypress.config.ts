@@ -4,6 +4,10 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:4200',
     specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
-    video: false,
+    screenshotOnRunFailure: true,
+    screenshotsFolder: 'cypress/screenshots',
+    setupNodeEvents(on, config) {
+
+    },
   },
 });
